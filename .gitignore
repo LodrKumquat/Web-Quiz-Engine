@@ -1,0 +1,46 @@
+# === OS/system files ===
+.DS_Store
+Thumbs.db
+
+# === IDEs ===
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# === Java build ===
+*.class
+*.jar
+*.war
+*.ear
+
+# === Gradle ===
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# === Logs ===
+*.log
+
+# === Temp/Cache ===
+*.tmp
+*.swp
+*~
+.cache/
+
+# === Test reports ===
+test-output/
+surefire-reports/
+
+# === Local config ===
+application-local.properties
+application-dev.properties
+
+# === Generated ===
+out/
+bin/
+
+# === Node (if using frontend tools) ===
+node_modules/
+dist/
