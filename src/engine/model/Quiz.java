@@ -6,18 +6,46 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
 @JsonPropertyOrder(
-        {"title", "text", "options"}
+        {"id", "title", "text", "options"}
 )
 public class Quiz {
+    private int id;
     private String title;
     @JsonProperty("text")
     private String question;
     private List<String> options;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private int answer;
 
     public Quiz() {
-        this.title = "The Java Logo";
-        this.question = "What is depicted on the Java logo?";
-        this.options = List.of("Robot","Tea leaf","Cup of coffee","Bug");
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setOptions(List<String> options) {
+        this.options = options;
+    }
+
+    public void setAnswer(int answer) {
+        this.answer = answer;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getAnswer() {
+        return answer;
     }
 
     public String getTitle() {
