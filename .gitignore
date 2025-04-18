@@ -44,3 +44,6 @@ bin/
 # === Node (if using frontend tools) ===
 node_modules/
 dist/
+
+# === Changing Test File from Hyperskill ===
+test/tests/WebQuizEngineTest.java
