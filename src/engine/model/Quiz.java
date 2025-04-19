@@ -2,6 +2,9 @@ package engine.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -10,12 +13,16 @@ import java.util.List;
 )
 public class Quiz {
     private int id;
+    @NotBlank
     private String title;
+    @NotBlank
     @JsonProperty("text")
     private String question;
+    @NotNull
+    @Size(min = 2)
     private List<String> options;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private int answer;
+    private List<Integer> answer;
 
     public Quiz() {
     }
@@ -36,7 +43,7 @@ public class Quiz {
         this.options = options;
     }
 
-    public void setAnswer(int answer) {
+    public void setAnswer(List<Integer> answer) {
         this.answer = answer;
     }
 
@@ -44,7 +51,7 @@ public class Quiz {
         return id;
     }
 
-    public int getAnswer() {
+    public List<Integer> getAnswer() {
         return answer;
     }
 
