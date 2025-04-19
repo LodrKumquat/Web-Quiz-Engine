@@ -1,10 +1,12 @@
-package engine;
+package engine.service;
 
+import engine.exception.QuizNotFoundException;
 import engine.model.Quiz;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -20,19 +22,18 @@ public class QuizService {
     }
 
     public Quiz getQuiz(int id) {
-        return quizzes.get(id);
+        Optional<Quiz> quizOptional = Optional.ofNullable(quizzes.get(id));
+        if (quizOptional.isPresent())
+            return quizOptional.get();
+        throw new QuizNotFoundException();
     }
 
     public boolean checkAnswer(int id, List<Integer> answer) {
-        if (quizzes.containsKey(id)) {
-            List<Integer> actualAnswers = quizzes.get(id).getAnswer();
-            if (actualAnswers == null) {
-                return answer == null || answer.isEmpty();
-            } else {
-                return actualAnswers.equals(answer);
-            }
+        List<Integer> actualAnswers = this.getQuiz(id).getAnswer();
+        if (actualAnswers == null) {
+            return answer == null || answer.isEmpty();
         } else {
-            return false;
+            return actualAnswers.equals(answer);
         }
     }
 
