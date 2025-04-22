@@ -11,12 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-
 @RestController
 public class QuizController {
 
-    private QuizService quizService;
+    private final QuizService quizService;
 
     @Autowired
     public QuizController(QuizService quizService) {
@@ -34,7 +32,7 @@ public class QuizController {
     }
 
     @GetMapping("/api/quizzes")
-    public Collection<Quiz> getAllQuiz() {
+    public Iterable<Quiz> getAllQuiz() {
         return quizService.getAllQuizzes();
     }
 
