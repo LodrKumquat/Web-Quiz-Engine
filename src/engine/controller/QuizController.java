@@ -1,32 +1,30 @@
 package engine.controller;
 
 import engine.exception.QuizNotFoundException;
-import engine.dto.*;
-import engine.persistence.entity.QuizUser;
-import engine.persistence.repository.UserRepository;
+import engine.dto.QuizUserRegistrationRequest;
+import engine.dto.QuizDTO;
+import engine.dto.Answer;
+import engine.dto.Result;
+
+import engine.exception.UserEmailAlreadyRegisteredException;
 import engine.service.QuizService;
+import engine.service.QuizUserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class QuizController {
 
     private final QuizService quizService;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final QuizUserService quizUserService;
 
     @Autowired
-    public QuizController(QuizService quizService, UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
+    public QuizController(QuizService quizService, QuizUserService quizUserService) {
         this.quizService = quizService;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.quizUserService = quizUserService;
     }
 
     @PostMapping("/api/quizzes")
@@ -51,18 +49,19 @@ public class QuizController {
     }
 
     @PostMapping("/api/register")
-    public void registerUser(@Valid @RequestBody RegistrationRequest registrationRequest) {
-        QuizUser newUser = new QuizUser();
-        newUser.setUsername(registrationRequest.email);
-        newUser.setPassword(passwordEncoder.encode(registrationRequest.password));
-        userRepository.save(newUser);
+    public void registerUser(@Valid @RequestBody QuizUserRegistrationRequest registrationRequest) {
+        quizUserService.registerUser(registrationRequest);
     }
-
-    public record RegistrationRequest(@Email String email, @Size(min = 5) String password) {}
 
     @ExceptionHandler(QuizNotFoundException.class)
     public ResponseEntity<String> handleQuizNotFoundException(
             QuizNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserEmailAlreadyRegisteredException.class)
+    public ResponseEntity<String> handleUserEmailAlreadyRegisteredException(
+            UserEmailAlreadyRegisteredException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
