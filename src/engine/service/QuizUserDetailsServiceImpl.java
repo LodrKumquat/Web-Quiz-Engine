@@ -1,7 +1,7 @@
 package engine.service;
 
-import engine.model.QuizUser;
-import engine.persistence.UserRepository;
+import engine.persistence.entity.QuizUser;
+import engine.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +25,7 @@ public class QuizUserDetailsServiceImpl implements UserDetailsService {
                 .findQuizUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return User.withUsername(quizUser.getUsername())
-                .password(quizUser.getPassword()).build();
+                .password(quizUser.getPassword())
+                .build();
     }
 }

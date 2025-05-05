@@ -1,8 +1,7 @@
-package engine.model;
+package engine.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,10 +11,8 @@ import java.util.List;
 @JsonPropertyOrder(
         {"id", "title", "text", "options"}
 )
-@Entity
-public class Quiz {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class QuizDTO {
+
     private int id;
 
     @NotBlank
@@ -27,14 +24,12 @@ public class Quiz {
 
     @NotNull
     @Size(min = 2)
-    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> options;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> answer;
 
-    public Quiz() {
+    public QuizDTO() {
     }
 
     public void setId(int id) {

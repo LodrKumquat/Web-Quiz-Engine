@@ -1,8 +1,10 @@
 package engine.service;
 
 import engine.exception.QuizNotFoundException;
-import engine.model.Quiz;
-import engine.persistence.QuizRepository;
+import engine.persistence.entity.Quiz;
+import engine.dto.QuizDTO;
+import engine.persistence.repository.QuizRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +16,24 @@ import java.util.Optional;
 public class QuizService {
 
     private final QuizRepository quizRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public QuizService(QuizRepository quizRepository) {
+    public QuizService(QuizRepository quizRepository, ModelMapper modelMapper) {
         this.quizRepository = quizRepository;
+        this.modelMapper = modelMapper;
     }
 
-    public Quiz addQuiz(Quiz quiz) {
+    public QuizDTO addQuiz(QuizDTO quizDTO) {
+        Quiz quiz = modelMapper.map(quizDTO, Quiz.class);
         quizRepository.save(quiz);
-        return quiz;
+        return modelMapper.map(quiz, QuizDTO.class);
     }
 
-    public Quiz getQuiz(int id) {
+    public QuizDTO getQuiz(int id) {
         Optional<Quiz> quizOptional = quizRepository.findById(id);
         if (quizOptional.isPresent()) {
-            return quizOptional.get();
+            return modelMapper.map(quizOptional.get(), QuizDTO.class);
         } else {
             throw new QuizNotFoundException();
         }
@@ -39,7 +44,10 @@ public class QuizService {
 
     }
 
-    public Iterable<Quiz> getAllQuizzes() {
-        return quizRepository.findAll();
+    public Iterable<QuizDTO> getAllQuizzes() {
+        List<QuizDTO> quizzes = new ArrayList<>();
+        quizRepository.findAll()
+                .forEach(quiz -> quizzes.add(modelMapper.map(quiz, QuizDTO.class)));
+        return quizzes;
     }
 }

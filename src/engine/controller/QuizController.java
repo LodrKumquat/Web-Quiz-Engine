@@ -1,8 +1,9 @@
 package engine.controller;
 
 import engine.exception.QuizNotFoundException;
-import engine.model.*;
-import engine.persistence.UserRepository;
+import engine.dto.*;
+import engine.persistence.entity.QuizUser;
+import engine.persistence.repository.UserRepository;
 import engine.service.QuizService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -29,23 +30,22 @@ public class QuizController {
     }
 
     @PostMapping("/api/quizzes")
-    public Quiz addQuiz(@RequestBody @Valid Quiz quiz) {
+    public QuizDTO addQuiz(@RequestBody @Valid QuizDTO quiz) {
         return quizService.addQuiz(quiz);
     }
 
     @GetMapping("/api/quizzes/{id}")
-    public Quiz getQuizById(@PathVariable("id") int id) {
+    public QuizDTO getQuizById(@PathVariable("id") int id) {
         return quizService.getQuiz(id);
     }
 
     @GetMapping("/api/quizzes")
-    public Iterable<Quiz> getAllQuiz() {
+    public Iterable<QuizDTO> getAllQuiz() {
         return quizService.getAllQuizzes();
     }
 
     @PostMapping("/api/quizzes/{id}/solve")
-    public Result solveQuiz(@PathVariable("id") int id,
-                                            @RequestBody Answer answer) {
+    public Result solveQuiz(@PathVariable("id") int id, @RequestBody Answer answer) {
         return quizService.checkAnswer(id, answer.getAnswer())
                 ? Result.CORRECT_RESULT : Result.WRONG_RESULT;
     }
@@ -58,7 +58,7 @@ public class QuizController {
         userRepository.save(newUser);
     }
 
-    record RegistrationRequest(@Email String email, @Size(min = 5) String password) {}
+    public record RegistrationRequest(@Email String email, @Size(min = 5) String password) {}
 
     @ExceptionHandler(QuizNotFoundException.class)
     public ResponseEntity<String> handleQuizNotFoundException(

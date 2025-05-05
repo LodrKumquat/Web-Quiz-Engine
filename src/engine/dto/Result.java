@@ -1,4 +1,4 @@
-package engine.model;
+package engine.dto;
 
 public class Result {
 

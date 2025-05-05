@@ -1,6 +1,6 @@
-package engine.persistence;
+package engine.persistence.repository;
 
-import engine.model.QuizUser;
+import engine.persistence.entity.QuizUser;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
