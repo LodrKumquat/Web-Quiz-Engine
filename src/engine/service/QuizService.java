@@ -1,8 +1,10 @@
 package engine.service;
 
+import engine.exception.DeletionRequestUnauthorizedException;
 import engine.exception.QuizNotFoundException;
 import engine.persistence.entity.Quiz;
 import engine.dto.QuizDTO;
+import engine.persistence.entity.QuizUser;
 import engine.persistence.repository.QuizRepository;
 import engine.persistence.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -26,25 +28,19 @@ public class QuizService {
         this.modelMapper = modelMapper;
     }
 
-    public QuizDTO addQuiz(QuizDTO quizDTO, UserDetails author) {
+    public QuizDTO addQuizByAuthor(QuizDTO quizDTO, UserDetails author) {
         Quiz quiz = modelMapper.map(quizDTO, Quiz.class);
         quiz.setAuthor(((QuizUserDetailsWrapper) author).getQuizUser());
         quizRepository.save(quiz);
         return modelMapper.map(quiz, QuizDTO.class);
     }
 
-    public QuizDTO getQuiz(int id) {
-        Optional<Quiz> quizOptional = quizRepository.findById(id);
-        if (quizOptional.isPresent()) {
-            return modelMapper.map(quizOptional.get(), QuizDTO.class);
-        } else {
-            throw new QuizNotFoundException();
-        }
+    public QuizDTO getQuizById(int id) {
+        return modelMapper.map(fetchQuiz(id), QuizDTO.class);
     }
 
     public boolean checkAnswer(int id, List<Integer> answer) {
-        return answer.equals(new ArrayList<>(this.getQuiz(id).getAnswer()));
-
+        return answer.equals(new ArrayList<>(this.fetchQuiz(id).getAnswer()));
     }
 
     public Iterable<QuizDTO> getAllQuizzes() {
@@ -52,5 +48,24 @@ public class QuizService {
         quizRepository.findAll()
                 .forEach(quiz -> quizzes.add(modelMapper.map(quiz, QuizDTO.class)));
         return quizzes;
+    }
+
+    public void deleteByIdAndUser(int id, UserDetails user) {
+        Quiz quiz = fetchQuiz(id);
+        QuizUser requestAuthor = ((QuizUserDetailsWrapper) user).getQuizUser();
+        if (requestAuthor.getId().equals(quiz.getAuthor().getId())) {
+            quizRepository.delete(quiz);
+        } else {
+            throw new DeletionRequestUnauthorizedException();
+        }
+    }
+
+    private Quiz fetchQuiz(int id) {
+        Optional<Quiz> quizOptional = quizRepository.findById(id);
+        if (quizOptional.isPresent()) {
+            return quizOptional.get();
+        } else {
+            throw new QuizNotFoundException();
+        }
     }
 }

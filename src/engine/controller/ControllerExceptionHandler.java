@@ -1,5 +1,6 @@
 package engine.controller;
 
+import engine.exception.DeletionRequestUnauthorizedException;
 import engine.exception.QuizNotFoundException;
 import engine.exception.UserEmailAlreadyRegisteredException;
 import org.springframework.http.HttpStatus;
@@ -27,5 +28,11 @@ public class ControllerExceptionHandler {
     public ResponseEntity<String> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DeletionRequestUnauthorizedException.class)
+    public ResponseEntity<String> handleDeletionRequestUnauthorizedException(
+            DeletionRequestUnauthorizedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 }

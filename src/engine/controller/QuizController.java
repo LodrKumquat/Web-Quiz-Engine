@@ -1,14 +1,15 @@
 package engine.controller;
 
-import engine.dto.QuizUserRegistrationRequest;
-import engine.dto.QuizDTO;
 import engine.dto.Answer;
 import engine.dto.Result;
-
+import engine.dto.QuizDTO;
+import engine.dto.QuizUserRegistrationRequest;
 import engine.service.QuizService;
 import engine.service.QuizUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +26,20 @@ public class QuizController {
         this.quizUserService = quizUserService;
     }
 
+    @PostMapping("/api/register")
+    public void registerUser(@Valid @RequestBody QuizUserRegistrationRequest registrationRequest) {
+        quizUserService.registerUser(registrationRequest);
+    }
+
     @PostMapping("/api/quizzes")
     public QuizDTO addQuiz(@RequestBody @Valid QuizDTO quiz,
                            @AuthenticationPrincipal UserDetails author) {
-        return quizService.addQuiz(quiz, author);
+        return quizService.addQuizByAuthor(quiz, author);
     }
 
     @GetMapping("/api/quizzes/{id}")
     public QuizDTO getQuizById(@PathVariable("id") int id) {
-        return quizService.getQuiz(id);
+        return quizService.getQuizById(id);
     }
 
     @GetMapping("/api/quizzes")
@@ -47,8 +53,10 @@ public class QuizController {
                 ? Result.CORRECT_RESULT : Result.WRONG_RESULT;
     }
 
-    @PostMapping("/api/register")
-    public void registerUser(@Valid @RequestBody QuizUserRegistrationRequest registrationRequest) {
-        quizUserService.registerUser(registrationRequest);
+    @DeleteMapping("/api/quizzes/{id}")
+    public ResponseEntity<String> deleteQuiz(@PathVariable("id") int id,
+                                             @AuthenticationPrincipal UserDetails user) {
+        quizService.deleteByIdAndUser(id, user);
+        return new ResponseEntity<>("Quiz deleted", HttpStatus.NO_CONTENT);
     }
 }
