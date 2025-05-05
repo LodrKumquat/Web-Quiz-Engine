@@ -1,18 +1,14 @@
 package engine.controller;
 
-import engine.exception.QuizNotFoundException;
 import engine.dto.QuizUserRegistrationRequest;
 import engine.dto.QuizDTO;
 import engine.dto.Answer;
 import engine.dto.Result;
 
-import engine.exception.UserEmailAlreadyRegisteredException;
 import engine.service.QuizService;
 import engine.service.QuizUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -54,17 +50,5 @@ public class QuizController {
     @PostMapping("/api/register")
     public void registerUser(@Valid @RequestBody QuizUserRegistrationRequest registrationRequest) {
         quizUserService.registerUser(registrationRequest);
-    }
-
-    @ExceptionHandler(QuizNotFoundException.class)
-    public ResponseEntity<String> handleQuizNotFoundException(
-            QuizNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UserEmailAlreadyRegisteredException.class)
-    public ResponseEntity<String> handleUserEmailAlreadyRegisteredException(
-            UserEmailAlreadyRegisteredException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
