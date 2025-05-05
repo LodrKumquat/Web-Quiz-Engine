@@ -20,6 +20,9 @@ public class Quiz {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> answer;
 
+    @ManyToOne
+    private QuizUser author;
+
     public Quiz() {
     }
 
@@ -61,5 +64,13 @@ public class Quiz {
 
     public List<String> getOptions() {
         return options;
+    }
+
+    public QuizUser getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(QuizUser author) {
+        this.author = author;
     }
 }

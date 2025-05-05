@@ -24,8 +24,6 @@ public class QuizUserDetailsServiceImpl implements UserDetailsService {
         QuizUser quizUser = userRepository
                 .findQuizUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return User.withUsername(quizUser.getUsername())
-                .password(quizUser.getPassword())
-                .build();
+        return new QuizUserDetailsWrapper(quizUser);
     }
 }

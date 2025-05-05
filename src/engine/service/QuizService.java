@@ -4,8 +4,10 @@ import engine.exception.QuizNotFoundException;
 import engine.persistence.entity.Quiz;
 import engine.dto.QuizDTO;
 import engine.persistence.repository.QuizRepository;
+import engine.persistence.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,8 +26,9 @@ public class QuizService {
         this.modelMapper = modelMapper;
     }
 
-    public QuizDTO addQuiz(QuizDTO quizDTO) {
+    public QuizDTO addQuiz(QuizDTO quizDTO, UserDetails author) {
         Quiz quiz = modelMapper.map(quizDTO, Quiz.class);
+        quiz.setAuthor(((QuizUserDetailsWrapper) author).getQuizUser());
         quizRepository.save(quiz);
         return modelMapper.map(quiz, QuizDTO.class);
     }
