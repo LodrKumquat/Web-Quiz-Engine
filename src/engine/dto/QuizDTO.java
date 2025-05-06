@@ -13,6 +13,7 @@ import java.util.List;
 )
 public class QuizDTO {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int id;
 
     @NotBlank
