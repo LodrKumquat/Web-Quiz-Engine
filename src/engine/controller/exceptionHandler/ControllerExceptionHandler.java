@@ -1,4 +1,4 @@
-package engine.controller;
+package engine.controller.exceptionHandler;
 
 import engine.exception.DeletionRequestUnauthorizedException;
 import engine.exception.QuizNotFoundException;

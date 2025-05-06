@@ -1,4 +1,4 @@
-package engine.service;
+package engine.persistence.entity.wrapper;
 
 import engine.persistence.entity.QuizUser;
 import org.springframework.security.core.GrantedAuthority;

@@ -7,6 +7,7 @@ import engine.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QuizUserService {
@@ -20,6 +21,7 @@ public class QuizUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void registerUser(QuizUserRegistrationRequest registrationRequest) {
         if (userRepository.findQuizUserByUsername(registrationRequest.email()).isPresent()) {
             throw new UserEmailAlreadyRegisteredException();

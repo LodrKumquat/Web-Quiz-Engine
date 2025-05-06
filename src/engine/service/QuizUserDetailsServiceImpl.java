@@ -1,9 +1,9 @@
 package engine.service;
 
 import engine.persistence.entity.QuizUser;
+import engine.persistence.entity.wrapper.QuizUserDetailsWrapper;
 import engine.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
