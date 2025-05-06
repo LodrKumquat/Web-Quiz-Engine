@@ -7,14 +7,17 @@ import engine.dto.QuizUserRegistrationRequest;
 import engine.service.QuizService;
 import engine.service.QuizUserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Validated
 public class QuizController {
 
     private final QuizService quizService;
@@ -43,8 +46,8 @@ public class QuizController {
     }
 
     @GetMapping("/api/quizzes")
-    public Iterable<QuizDTO> getAllQuiz() {
-        return quizService.getAllQuizzes();
+    public Iterable<QuizDTO> getAllQuiz(@RequestParam @Min(0) int page) {
+        return quizService.getAllQuizzes(page);
     }
 
     @PostMapping("/api/quizzes/{id}/solve")

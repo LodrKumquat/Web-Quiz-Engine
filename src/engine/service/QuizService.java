@@ -9,6 +9,8 @@ import engine.persistence.entity.wrapper.QuizUserDetailsWrapper;
 import engine.persistence.repository.QuizRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +47,9 @@ public class QuizService {
         return answer.equals(new ArrayList<>(this.fetchQuiz(id).getAnswer()));
     }
 
-    public Iterable<QuizDTO> getAllQuizzes() {
-        List<QuizDTO> quizzes = new ArrayList<>();
-        quizRepository.findAll()
-                .forEach(quiz -> quizzes.add(modelMapper.map(quiz, QuizDTO.class)));
-        return quizzes;
+    public Page<QuizDTO> getAllQuizzes(int pageNum) {
+        return quizRepository.findAll(PageRequest.of(pageNum - 1, 10))
+                .map(quiz -> modelMapper.map(quiz, QuizDTO.class));
     }
 
     @Transactional
