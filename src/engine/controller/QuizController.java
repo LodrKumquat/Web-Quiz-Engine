@@ -1,9 +1,7 @@
 package engine.controller;
 
-import engine.dto.Answer;
-import engine.dto.Result;
-import engine.dto.QuizDTO;
-import engine.dto.QuizUserRegistrationRequest;
+import engine.dto.*;
+import engine.persistence.entity.CompletedQuizzes;
 import engine.service.QuizService;
 import engine.service.QuizUserService;
 import jakarta.validation.Valid;
@@ -46,14 +44,22 @@ public class QuizController {
     }
 
     @GetMapping("/api/quizzes")
-    public Iterable<QuizDTO> getAllQuiz(@RequestParam @Min(0) int page) {
+    public Iterable<QuizDTO> getAllQuizzes(@RequestParam @Min(0) int page) {
         return quizService.getAllQuizzes(page);
     }
 
     @PostMapping("/api/quizzes/{id}/solve")
-    public Result solveQuiz(@PathVariable("id") int id, @RequestBody Answer answer) {
-        return quizService.checkAnswer(id, answer.getAnswer())
-                ? Result.CORRECT_RESULT : Result.WRONG_RESULT;
+    public Result solveQuiz(@PathVariable("id") int id, @RequestBody Answer answer, @AuthenticationPrincipal UserDetails solving) {
+        boolean isCorrectAnswer = quizService.checkAnswer(id, answer.getAnswer());
+        if (isCorrectAnswer) {
+            quizUserService.recordSuccessfulSolution(id, solving);
+        }
+        return isCorrectAnswer ? Result.CORRECT_RESULT : Result.WRONG_RESULT;
+    }
+
+    @GetMapping("/api/quizzes/completed")
+    public Iterable<CompletedQuizzes> getCompletedQuizzes(@RequestParam @Min(0) int page, @AuthenticationPrincipal UserDetails user) {
+        return quizUserService.getCompletedQuizzesByUser(page, user);
     }
 
     @DeleteMapping("/api/quizzes/{id}")
