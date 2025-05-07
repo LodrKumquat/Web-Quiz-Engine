@@ -48,7 +48,7 @@ public class QuizService {
     }
 
     public Page<QuizDTO> getAllQuizzes(int pageNum) {
-        return quizRepository.findAll(PageRequest.of(pageNum - 1, 10))
+        return quizRepository.findAll(PageRequest.of(pageNum, 10))
                 .map(quiz -> modelMapper.map(quiz, QuizDTO.class));
     }
 

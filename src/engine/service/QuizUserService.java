@@ -55,6 +55,6 @@ public class QuizUserService {
     public Page<CompletedQuizzes> getCompletedQuizzesByUser(int page, UserDetails user) {
         Long currentUserId = ((QuizUserDetailsWrapper) user).getQuizUser().getId();
         return completedQuizzesRepository.findByUserId(currentUserId,
-                PageRequest.of(page - 1, 10));
+                PageRequest.of(page, 10));
     }
 }
